@@ -1,0 +1,59 @@
+{
+  "name": "serial-console-com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tslint": "tslint --fix 'lib/**/*.ts'",
+    "jest": "jest --verbose",
+    "testw": "jest --watch",
+    "coverage": "jest --coverage",
+    "prettier": "prettier --write '**/*.{js,json,md,ts}'",
+    "compile": "tsc -p tsconfig.test.json",
+    "test": "run-s -c jest tslint",
+    "prebuild": "rm -rf ./build",
+    "build": "tsc",
+    "preversion": "run-s test compile build",
+    "postversion": "git push && git push --tags && npm publish --access=public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eove/serial-console-com.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eove/serial-console-com/issues"
+  },
+  "homepage": "https://github.com/eove/serial-console-com#readme",
+  "dependencies": {
+    "debug": "4.1.1",
+    "rxjs": "6.5.3",
+    "serialport": "7.1.5"
+  },
+  "devDependencies": {
+    "@types/debug": "4.1.5",
+    "@types/jest": "24.0.18",
+    "@types/node": "12.7.5",
+    "@types/rx": "4.1.1",
+    "@types/serialport": "7.0.4",
+    "jest": "24.9.0",
+    "npm-run-all": "4.1.5",
+    "ts-jest": "24.0.2",
+    "ts-node": "8.3.0",
+    "tslint": "5.20.0",
+    "tslint-config-prettier": "1.18.0",
+    "typescript": "3.6.3"
+  },
+  "jest": {
+    "transform": {
+      ".ts": "ts-jest"
+    },
+    "testRegex": "/lib/.*\\.spec\\.ts$",
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ]
+  }
+}
