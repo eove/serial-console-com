@@ -1,7 +1,7 @@
 {
   "name": "serial-console-com",
   "version": "1.0.0",
-  "description": "",
+  "description": "library to communicate with a unix console over a serial line",
   "main": "index.js",
   "scripts": {
     "tslint": "tslint --fix 'lib/**/*.ts'",
