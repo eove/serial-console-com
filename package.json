@@ -28,12 +28,14 @@
   "homepage": "https://github.com/eove/serial-console-com#readme",
   "dependencies": {
     "debug": "4.1.1",
+    "lodash": "4.17.15",
     "rxjs": "6.5.3",
     "serialport": "7.1.5"
   },
   "devDependencies": {
     "@types/debug": "4.1.5",
     "@types/jest": "24.0.18",
+    "@types/lodash": "4.14.138",
     "@types/node": "12.7.5",
     "@types/rx": "4.1.1",
     "@types/serialport": "7.0.4",
