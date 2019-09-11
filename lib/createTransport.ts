@@ -1,5 +1,5 @@
-import * as _ from 'lodash';
 import * as debugLib from 'debug';
+import * as _ from 'lodash';
 import { Observable, Subject } from 'rxjs';
 import * as SerialPort from 'serialport';
 
