@@ -1,6 +1,6 @@
 import * as program from 'commander';
 
-import { createSerialCommunicator } from './createSerialCommunicator';
+import { createSerialCommunicator } from './lib';
 
 program
   .command('run <command>')

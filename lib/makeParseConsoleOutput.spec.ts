@@ -1,7 +1,5 @@
-import {
-  makeParseConsoleOutput,
-  ParseConsoleOutputResult
-} from './makeParseConsoleOutput';
+import { makeParseConsoleOutput } from './makeParseConsoleOutput';
+import { ParseConsoleOutputResult } from './types';
 
 describe('parse console output', () => {
   let parseConsoleOutput: (data: string) => ParseConsoleOutputResult;

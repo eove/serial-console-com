@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
 import * as _ from 'lodash';
+import { Observable } from 'rxjs';
 
 import { createCommandRunner } from './createCommandRunner';
 import { createTransport } from './createTransport';
