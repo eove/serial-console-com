@@ -2,7 +2,7 @@
   "name": "@eove/serial-console-com",
   "version": "1.0.2",
   "description": "library to communicate with a (unix) console over a serial line",
-  "bin": "ts-node ./cli.ts",
+  "bin": "./cli.js",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "files": [

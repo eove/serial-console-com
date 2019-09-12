@@ -1,6 +1,6 @@
-import * as program from 'commander';
+const program = require('commander');
 
-import { createSerialCommunicator } from './lib';
+const { createSerialCommunicator } = require('./build');
 
 program
   .command('run <command>')
