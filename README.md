@@ -28,3 +28,5 @@ The async `executeCommand` method returns an object with the following fields:
 
 - `errorCode`: a number corresponding to the error code of the command
 - `output`: a string array corresponding to the lines of the command output
+
+🔥You can try it from the command line: `npx @eove/serial-console-com run 'ls -al /' -p /dev/ttyUSB0`
