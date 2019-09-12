@@ -31,7 +31,7 @@ program
       .connect(options.portName)
       .then(() => communicator.executeCmd('ls -al'))
       .then(lines => {
-        console.log(lines.join('\n'));
+        console.log(lines.join(options.lineSeparator));
         process.exit(0);
       })
       .catch(e => {

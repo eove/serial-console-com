@@ -71,7 +71,10 @@ export function createCommandRunner(
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
       const answer = waitAnswer();
-      return transport.write(cmdLine).then(() => answer);
+      return transport
+        .write(cmdLine)
+        .then(() => answer)
+        .then(cleanupLines);
     });
 
     function waitAnswer() {
@@ -89,6 +92,10 @@ export function createCommandRunner(
           first()
         );
       }
+    }
+
+    function cleanupLines(lines: string[]) {
+      return lines.filter(l => !l.includes(cmdLine.trim()));
     }
   }
 }
