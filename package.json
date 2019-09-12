@@ -1,7 +1,7 @@
 {
-  "name": "serial-console-com",
+  "name": "@eove/serial-console-com",
   "version": "1.0.0",
-  "description": "library to communicate with a unix console over a serial line",
+  "description": "library to communicate with a (unix) console over a serial line",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "files": [
