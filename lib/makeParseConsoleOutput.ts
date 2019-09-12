@@ -1,21 +1,22 @@
 import * as _ from 'lodash';
 
-export interface MakeFindAnswerOptions {
-  endPattern: string;
+export interface MakeParseConsoleOutputOptions {
+  prompt?: string;
   lineSeparator?: string;
 }
 
-export function makeFindAnswer(options?: MakeFindAnswerOptions): Function {
-  const { endPattern, lineSeparator } = _.defaults({}, options, {
-    endPattern: '#',
+export function makeParseConsoleOutput(
+  options?: MakeParseConsoleOutputOptions
+): Function {
+  const { prompt, lineSeparator } = _.defaults({}, options, {
+    prompt: '/ #',
     lineSeparator: '\n'
   });
 
   return (data: string) => {
-    const regex = new RegExp(`(.*)(${endPattern})`, 'sm');
+    const regex = new RegExp(`(.*)${lineSeparator}(${prompt})`, 'sm');
     const found = data.match(regex);
     if (found && found.length) {
-      // console.log('found:', found[1].split(lineSeparator));
       return {
         lines: found[1]
           .split(lineSeparator)
