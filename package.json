@@ -32,6 +32,7 @@
   "homepage": "https://github.com/eove/serial-console-com#readme",
   "dependencies": {
     "@arpinum/promising": "3.0.0",
+    "commander": "3.0.1",
     "debug": "4.1.1",
     "lodash": "4.17.15",
     "rxjs": "6.5.3",

@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 
 import { createCommandRunner } from './createCommandRunner';
@@ -9,6 +10,8 @@ export interface SerialCommunicator {
   disconnect: () => Promise<void>;
   executeCmd: (cmd: string) => Promise<any>;
   connected: boolean;
+  answer$: Observable<any>;
+  data$: Observable<any>;
 }
 
 export interface CommunicatorCreationOptions {
@@ -16,7 +19,6 @@ export interface CommunicatorCreationOptions {
 }
 
 export function createSerialCommunicator(
-  portName: string,
   options?: CommunicatorCreationOptions
 ): SerialCommunicator {
   const { baudrate } = _.defaults({}, options, { baudrate: 115200 });
@@ -32,10 +34,16 @@ export function createSerialCommunicator(
     executeCmd,
     get connected() {
       return transport.connected;
+    },
+    get answer$() {
+      return runner.answer$;
+    },
+    get data$() {
+      return transport.data$;
     }
   };
 
-  function connect(): Promise<void> {
+  function connect(portName: string): Promise<void> {
     return transport.connect(portName);
   }
 
@@ -44,6 +52,6 @@ export function createSerialCommunicator(
   }
 
   function executeCmd(cmd: string): Promise<any> {
-    return runner.runCommand({ cmdLine: cmd });
+    return runner.runCommand({ cmdLine: `${cmd}\n` });
   }
 }
