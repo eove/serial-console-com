@@ -12,12 +12,17 @@ program
   )
   .action(options => {
     const communicator = createSerialCommunicator();
-    // communicator.answer$.subscribe(a => console.log('answer: ', a));
     communicator
       .connect(options.portName)
       .then(() => communicator.executeCmd('ls -al'))
-      .then(console.log)
-      .catch(e => console.error(e));
+      .then(lines => {
+        console.log(lines.join('\n'));
+        process.exit(0);
+      })
+      .catch(e => {
+        console.error(e);
+        process.exit(1);
+      });
   });
 
 program.parse(process.argv);

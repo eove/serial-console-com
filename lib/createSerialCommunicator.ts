@@ -52,6 +52,6 @@ export function createSerialCommunicator(
   }
 
   function executeCmd(cmd: string): Promise<any> {
-    return runner.runCommand({ cmdLine: `${cmd}\n` });
+    return runner.runCommand({ cmdLine: cmd });
   }
 }

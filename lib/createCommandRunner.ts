@@ -1,11 +1,10 @@
 import { createQueue } from '@arpinum/promising';
-import { from, Observable, Subject, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import {
   catchError,
   filter,
   first,
   map,
-  mergeMap,
   publish,
   refCount,
   scan,
@@ -56,8 +55,7 @@ export function createCommandRunner(
       }
     ),
     filter((result: ParseConsoleOutputResult) => result.lines.length !== 0),
-    map((result: ParseConsoleOutputResult) => result.lines),
-    mergeMap((x: any[]) => from(x))
+    map((result: ParseConsoleOutputResult) => result.lines)
   );
 
   return {
@@ -73,7 +71,7 @@ export function createCommandRunner(
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
       const answer = waitAnswer();
-      return transport.write(cmdLine).then(() => answer);
+      return transport.write(`${cmdLine}\n`).then(() => answer);
     });
 
     function waitAnswer() {
