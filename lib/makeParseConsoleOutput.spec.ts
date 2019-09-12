@@ -36,7 +36,7 @@ describe('parse console output', () => {
     });
   });
 
-  it('should only return remaining data when no prompt in output', () => {
+  it('should return remaining data when no prompt in output', () => {
     expect(
       parseConsoleOutput(
         'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \ndrwxr-xr-x 18 root root 0 Sep 11 15:48 .. \n'
@@ -48,12 +48,30 @@ describe('parse console output', () => {
     });
   });
 
-  it('should only return remaining data when no line separator in output', () => {
+  it('should return remaining data when no line separator in output', () => {
     expect(
       parseConsoleOutput('drwxr-xr-x 18 root root 0 Sep 11 15:48 . / #')
     ).toEqual({
       lines: [],
       remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . / #'
+    });
+  });
+
+  it('should return remaining data when prompt is not the expected one', () => {
+    expect(
+      parseConsoleOutput('drwxr-xr-x 18 root root 0 Sep 11 15:48 . \n/ $')
+    ).toEqual({
+      lines: [],
+      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \n/ $'
+    });
+  });
+
+  it('should return remaining data when line separator is not the expected one', () => {
+    expect(
+      parseConsoleOutput('drwxr-xr-x 18 root root 0 Sep 11 15:48 . \r/ #')
+    ).toEqual({
+      lines: [],
+      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \r/ #'
     });
   });
 });
