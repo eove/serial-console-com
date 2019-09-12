@@ -5,9 +5,14 @@ export interface MakeParseConsoleOutputOptions {
   lineSeparator?: string;
 }
 
+export interface ParseConsoleOutputResult {
+  lines: string[];
+  remaining: string;
+}
+
 export function makeParseConsoleOutput(
   options?: MakeParseConsoleOutputOptions
-): Function {
+): (data: string) => ParseConsoleOutputResult {
   const { prompt, lineSeparator } = _.defaults({}, options, {
     prompt: '/ #',
     lineSeparator: '\n'
