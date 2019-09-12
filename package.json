@@ -26,8 +26,12 @@
     "type": "git",
     "url": "git+https://github.com/eove/serial-console-com.git"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "serial",
+    "console"
+  ],
+  "author": "Peio ROTH <pierreroth64@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/eove/serial-console-com/issues"
   },
