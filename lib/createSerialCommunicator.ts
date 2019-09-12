@@ -16,17 +16,23 @@ export interface SerialCommunicator {
 
 export interface CommunicatorCreationOptions {
   baudrate?: number;
+  prompt?: string;
+  lineSeparator?: string;
 }
 
 export function createSerialCommunicator(
   options?: CommunicatorCreationOptions
 ): SerialCommunicator {
-  const { baudrate } = _.defaults({}, options, { baudrate: 115200 });
+  const { baudrate, prompt, lineSeparator } = _.defaults({}, options, {
+    baudrate: 115200,
+    prompt: '/ #',
+    lineSeparator: '\n'
+  });
   const transport = createTransport({ baudrate });
   const runner = createCommandRunner({
     data$: transport.data$,
     transport,
-    parseData: makeParseConsoleOutput()
+    parseData: makeParseConsoleOutput({ prompt, lineSeparator })
   });
   return {
     connect,
@@ -52,6 +58,6 @@ export function createSerialCommunicator(
   }
 
   function executeCmd(cmd: string): Promise<any> {
-    return runner.runCommand({ cmdLine: cmd });
+    return runner.runCommand({ cmdLine: `${cmd}${lineSeparator}` });
   }
 }

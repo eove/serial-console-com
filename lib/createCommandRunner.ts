@@ -71,7 +71,7 @@ export function createCommandRunner(
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
       const answer = waitAnswer();
-      return transport.write(`${cmdLine}\n`).then(() => answer);
+      return transport.write(cmdLine).then(() => answer);
     });
 
     function waitAnswer() {
