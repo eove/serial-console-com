@@ -32,9 +32,10 @@ program
     communicator
       .connect(options.portName)
       .then(() => communicator.executeCmd(command))
-      .then(lines => {
-        console.log(lines.join(options.lineSeparator));
-        process.exit(0);
+      .then(result => {
+        const { output, errorCode } = result;
+        console.log(output.join(options.lineSeparator));
+        process.exit(errorCode);
       })
       .catch(e => {
         console.error(e);

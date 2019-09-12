@@ -23,7 +23,7 @@ interface Command {
 }
 
 interface CommandRunner {
-  runCommand: (cmd: Command) => Promise<{}>;
+  runCommand: (cmd: Command) => Promise<string[]>;
   answer$: Observable<any>;
   command$: Observable<unknown>;
 }

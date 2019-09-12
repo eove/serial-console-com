@@ -5,6 +5,8 @@ import { createCommandRunner } from './createCommandRunner';
 import { createTransport } from './createTransport';
 import { makeParseConsoleOutput } from './makeParseConsoleOutput';
 
+const SAFE_PATTERN = 'THIS IS MY RETURN CODE';
+
 export interface SerialCommunicator {
   connect: (portName: string) => Promise<void>;
   disconnect: () => Promise<void>;
@@ -57,7 +59,25 @@ export function createSerialCommunicator(
     return transport.disconnect();
   }
 
-  function executeCmd(cmd: string): Promise<any> {
-    return runner.runCommand({ cmdLine: `${cmd}${lineSeparator}` });
+  async function executeCmd(cmd: string) {
+    const cmdOutput = await runner.runCommand({
+      cmdLine: `${cmd}${lineSeparator}`
+    });
+    const errCodeCmdOutput = await runner.runCommand({
+      cmdLine: `echo ${SAFE_PATTERN}: $?${lineSeparator}`
+    });
+    return {
+      output: cmdOutput,
+      errorCode: parseErrorCode(errCodeCmdOutput.join())
+    };
+
+    function parseErrorCode(output: any) {
+      const regex = new RegExp(`${SAFE_PATTERN}: (.*)`, 'sm');
+      const found = output.match(regex);
+      if (found && found.length) {
+        return Number(found[1]);
+      }
+      return -127;
+    }
   }
 }

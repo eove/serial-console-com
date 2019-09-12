@@ -18,6 +18,13 @@ const communicator = createSerialCommunicator();
 communicator
   .connect('/dev/ttyUSB0')
   .then(() => communicator.executeCommand('ls -al'))
-  .then(console.log);
-});
+  .then(({ output, errorCode }) => {
+    console.log('error code:', errorCode);
+    console.log('output', output.join('\n'));
+  });
 ```
+
+The async `executeCommand` method returns an object with the following fields:
+
+- `errorCode`: a number corresponding to the error code of the command
+- `output`: a string array corresponding to the lines of the command output
