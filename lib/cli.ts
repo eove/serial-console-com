@@ -3,8 +3,10 @@ import * as program from 'commander';
 import { createSerialCommunicator } from './createSerialCommunicator';
 
 program
-  .command('com')
-  .description('communicates with  avaiable ports')
+  .command('run <command>')
+  .description(
+    'run the given <command> through the serial line and returns result'
+  )
   .option(
     '-p, --port-name [PORT_NAME]',
     'PORT_NAME is the serial port to communicate with',
@@ -21,7 +23,7 @@ program
     'LINE_SEPARATOR is the serial console line separator',
     '\n'
   )
-  .action(options => {
+  .action((command, options) => {
     const communicator = createSerialCommunicator({
       baudrate: options.baudrate,
       prompt: options.prompt,
@@ -29,7 +31,7 @@ program
     });
     communicator
       .connect(options.portName)
-      .then(() => communicator.executeCmd('ls -al'))
+      .then(() => communicator.executeCmd(command))
       .then(lines => {
         console.log(lines.join(options.lineSeparator));
         process.exit(0);
