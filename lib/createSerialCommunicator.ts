@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 
+import { createCommandRunner } from './createCommandRunner';
 import { createTransport } from './createTransport';
+import { makeParseConsoleOutput } from './makeParseConsoleOutput';
 
 export interface SerialCommunicator {
   connect: (portName: string) => Promise<void>;
@@ -19,6 +21,11 @@ export function createSerialCommunicator(
 ): SerialCommunicator {
   const { baudrate } = _.defaults({}, options, { baudrate: 115200 });
   const transport = createTransport({ baudrate });
+  const runner = createCommandRunner({
+    data$: transport.data$,
+    transport,
+    parseData: makeParseConsoleOutput()
+  });
   return {
     connect,
     disconnect,
@@ -28,15 +35,15 @@ export function createSerialCommunicator(
     }
   };
 
-  async function connect(): Promise<void> {
+  function connect(): Promise<void> {
     return transport.connect(portName);
   }
 
-  async function disconnect(): Promise<void> {
+  function disconnect(): Promise<void> {
     return transport.disconnect();
   }
 
-  async function executeCmd(cmd: string): Promise<any> {
-    
+  function executeCmd(cmd: string): Promise<any> {
+    return runner.runCommand({ cmdLine: cmd });
   }
 }

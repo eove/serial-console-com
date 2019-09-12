@@ -12,7 +12,11 @@ import {
   timeout
 } from 'rxjs/operators';
 
-import { Transport } from './createTransport';
+import {
+  ParseConsoleOutputFunction,
+  ParseConsoleOutputResult,
+  Transport
+} from './types';
 
 interface Command {
   cmdLine: string;
@@ -26,7 +30,7 @@ interface CommandRunner {
 }
 
 interface CommandRunnerDependencies {
-  debug: any;
+  parseData: ParseConsoleOutputFunction;
   transport: Transport;
   data$: Observable<any>;
 }
@@ -34,25 +38,25 @@ interface CommandRunnerDependencies {
 export function createCommandRunner(
   dependencies: CommandRunnerDependencies
 ): CommandRunner {
-  const { data$, transport, debug } = dependencies;
+  const { data$, transport, parseData } = dependencies;
   const commandQueue = createQueue({ concurrency: 1 });
   const commandSource = new Subject();
 
   const answer$ = data$.pipe(
     scan(
-      (acc: FindAnswersResult, byte: any) => {
+      (acc: ParseConsoleOutputResult, byte: any) => {
         const { remaining: remainingBytes } = acc;
         const received = remainingBytes.concat(...byte);
-        const { remaining, answers } = driver.findAnswers(received);
-        return { remaining, answers };
+        const { remaining, lines } = parseData(received);
+        return { remaining, lines };
       },
       {
         remaining: '',
-        answers: []
+        lines: []
       }
     ),
-    filter((result: FindAnswersResult) => result.answers.length !== 0),
-    map((result: FindAnswersResult) => result.answers),
+    filter((result: ParseConsoleOutputResult) => result.lines.length !== 0),
+    map((result: ParseConsoleOutputResult) => result.lines),
     mergeMap((x: any[]) => from(x))
   );
 
@@ -65,22 +69,20 @@ export function createCommandRunner(
   };
 
   function runCommand(cmd: Command) {
-    const { cmdLine, answerTimeoutMS } = cmd;
+    const { cmdLine, answerTimeoutMS = 3000 } = cmd;
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
-      const answer = waitAnswer(cmd);
+      const answer = waitAnswer();
       return transport.write(cmdLine).then(() => answer);
     });
 
-    function waitAnswer(currentCmd: Command) {
-      return currentCmd.isAnswerExpected
-        ? commandAnswer$()
-            .pipe(
-              timeout(answerTimeoutMS),
-              catchError(error => throwError(error))
-            )
-            .toPromise()
-        : Promise.resolve();
+    function waitAnswer() {
+      return commandAnswer$()
+        .pipe(
+          timeout(answerTimeoutMS),
+          catchError(error => throwError(error))
+        )
+        .toPromise();
 
       function commandAnswer$() {
         return answer$.pipe(

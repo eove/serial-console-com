@@ -1,23 +1,11 @@
 import * as debugLib from 'debug';
 import * as _ from 'lodash';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import * as SerialPort from 'serialport';
 
+import { Device, Transport } from './types';
+
 type UninstallHandler = () => void;
-
-export interface Device {
-  name: string;
-}
-
-export interface Transport {
-  connect: (portName: string) => Promise<void>;
-  disconnect: () => Promise<void>;
-  write: (bytes: string) => Promise<any>;
-  discover: () => Promise<Device[]>;
-  data$: Observable<unknown>;
-  event$: Observable<unknown>;
-  connected: boolean;
-}
 
 interface TransportCreationOptions {
   debugEnabled?: boolean;

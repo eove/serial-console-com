@@ -1,18 +1,15 @@
 import * as _ from 'lodash';
 
+import { ParseConsoleOutputFunction } from './types';
+
 export interface MakeParseConsoleOutputOptions {
   prompt?: string;
   lineSeparator?: string;
 }
 
-export interface ParseConsoleOutputResult {
-  lines: string[];
-  remaining: string;
-}
-
 export function makeParseConsoleOutput(
   options?: MakeParseConsoleOutputOptions
-): (data: string) => ParseConsoleOutputResult {
+): ParseConsoleOutputFunction {
   const { prompt, lineSeparator } = _.defaults({}, options, {
     prompt: '/ #',
     lineSeparator: '\n'
