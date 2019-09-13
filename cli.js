@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const debugLib = require('debug');
 const program = require('commander');
 
 const { createSerialCommunicator } = require('./build');
@@ -18,6 +19,10 @@ program
     'BAUD_RATE is the serial baud rate',
     115200
   )
+  .option(
+    '-d, --debug-enabled',
+    'when set, outputs debug message to the console'
+  )
   .option('--prompt [PROMPT]', 'PROMPT is the serial console prompt', '/ #')
   .option(
     '-l, --line-separator [LINE_SEPARATOR]',
@@ -25,7 +30,11 @@ program
     '\n'
   )
   .action((command, options) => {
+    const debug = Object.assign(debugLib('cli'), {
+      enabled: options.debugEnabled
+    });
     const communicator = createSerialCommunicator({
+      debugEnabled: options.debugEnabled,
       baudrate: options.baudrate,
       prompt: options.prompt,
       lineSeparator: options.lineSeparator
@@ -36,6 +45,8 @@ program
       .then(result => {
         const { output, errorCode } = result;
         console.log(output.join(options.lineSeparator));
+        debug(`ran command: '${communicator}'`);
+        debug(`error code: ${errorCode})`);
         process.exit(errorCode);
       })
       .catch(e => {

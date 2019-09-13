@@ -20,21 +20,28 @@ export interface CommunicatorCreationOptions {
   baudrate?: number;
   prompt?: string;
   lineSeparator?: string;
+  debugEnabled?: boolean;
 }
 
 export function createSerialCommunicator(
   options?: CommunicatorCreationOptions
 ): SerialCommunicator {
-  const { baudrate, prompt, lineSeparator } = _.defaults({}, options, {
-    baudrate: 115200,
-    prompt: '/ #',
-    lineSeparator: '\n'
-  });
-  const transport = createTransport({ baudrate });
+  const { baudrate, prompt, lineSeparator, debugEnabled } = _.defaults(
+    {},
+    options,
+    {
+      baudrate: 115200,
+      prompt: '/ #',
+      lineSeparator: '\n',
+      debugEnabled: false
+    }
+  );
+  const transport = createTransport({ baudrate, debugEnabled });
   const runner = createCommandRunner({
     data$: transport.data$,
     transport,
-    parseData: makeParseConsoleOutput({ prompt, lineSeparator })
+    parseData: makeParseConsoleOutput({ prompt, lineSeparator }),
+    debugEnabled
   });
   return {
     connect,

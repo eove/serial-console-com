@@ -1,3 +1,5 @@
+import * as debugLib from 'debug';
+import * as _ from 'lodash';
 import { createQueue } from '@arpinum/promising';
 import { Observable, Subject, throwError } from 'rxjs';
 import {
@@ -32,12 +34,21 @@ interface CommandRunnerDependencies {
   parseData: ParseConsoleOutputFunction;
   transport: Transport;
   data$: Observable<any>;
+  debugEnabled?: boolean;
 }
 
 export function createCommandRunner(
   dependencies: CommandRunnerDependencies
 ): CommandRunner {
-  const { data$, transport, parseData } = dependencies;
+  const { data$, transport, parseData, debugEnabled } = _.defaults(
+    {},
+    dependencies,
+    { debugEnabled: false }
+  );
+  const debug = Object.assign(debugLib('command-runner'), {
+    enabled: debugEnabled
+  });
+
   const commandQueue = createQueue({ concurrency: 1 });
   const commandSource = new Subject();
 
@@ -68,6 +79,7 @@ export function createCommandRunner(
 
   function runCommand(cmd: Command) {
     const { cmdLine, answerTimeoutMS = 3000 } = cmd;
+    debug(`running command: ${cmdLine}`);
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
       const answer = waitAnswer();
