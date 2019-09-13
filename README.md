@@ -13,7 +13,11 @@ This lib exposes a communicator which may execute commands through the serial li
 ```js
 import { createSerialCommunicator } from '@eove/serial-console-com';
 
-const communicator = createSerialCommunicator();
+const communicator = createSerialCommunicator({
+  baudrate: 115200,
+  prompt: '/ #',
+  lineSeparator: '\n'
+});
 
 communicator
   .connect('/dev/ttyUSB0')
@@ -30,3 +34,17 @@ The async `executeCommand` method returns an object with the following fields:
 - `output`: a string array corresponding to the lines of the command output
 
 🔥You can try it from the command line: `npx @eove/serial-console-com run 'ls -al /' -p /dev/ttyUSB0`
+
+Note: the `npx` command exits with the given command error code:
+
+```bash
+npx @eove/serial-console-com run 'true' -p /dev/ttyUSB0
+echo $?
+0
+```
+
+```bash
+npx @eove/serial-console-com run 'false' -p /dev/ttyUSB0
+echo $?
+1
+```
