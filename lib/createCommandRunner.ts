@@ -1,6 +1,6 @@
+import { createQueue } from '@arpinum/promising';
 import * as debugLib from 'debug';
 import * as _ from 'lodash';
-import { createQueue } from '@arpinum/promising';
 import { Observable, Subject, throwError } from 'rxjs';
 import {
   catchError,
