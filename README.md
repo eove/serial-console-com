@@ -1,6 +1,6 @@
 # serial-console-com [![Build Status](https://www.travis-ci.org/eove/serial-console-com.svg?branch=master)](https://www.travis-ci.org/eove/serial-console-com) [![npm version](https://badge.fury.io/js/%40eove%2Fserial-console-com.svg)](https://badge.fury.io/js/%40eove%2Fserial-console-com) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-Node.js lib to communicate a unix-like console through a serial line
+Node.js lib to communicate with a unix-like console through a serial line
 
 ## Install
 
