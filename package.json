@@ -47,14 +47,14 @@
   "devDependencies": {
     "@types/debug": "4.1.5",
     "@types/jest": "24.0.18",
-    "@types/lodash": "4.14.138",
+    "@types/lodash": "4.14.139",
     "@types/node": "12.7.5",
     "@types/rx": "4.1.1",
     "@types/serialport": "7.0.4",
     "jest": "24.9.0",
     "npm-run-all": "4.1.5",
-    "ts-jest": "24.0.2",
-    "ts-node": "8.3.0",
+    "ts-jest": "24.1.0",
+    "ts-node": "8.4.1",
     "tslint": "5.20.0",
     "tslint-config-prettier": "1.18.0",
     "typescript": "3.6.3"
