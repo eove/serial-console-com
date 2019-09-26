@@ -21,7 +21,7 @@ export function makeParseConsoleOutput(
     if (found && found.length) {
       return {
         lines: found[1]
-          .split(lineSeparator)
+          .split(/\r\n|\r|\n/)
           .map(l => l.trim())
           .filter(x => x),
         remaining: ''
