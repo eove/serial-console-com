@@ -45,8 +45,8 @@ program
       .then(result => {
         const { output, errorCode } = result;
         console.log(output.join(options.lineSeparator));
-        debug(`ran command: '${communicator}'`);
-        debug(`error code: ${errorCode})`);
+        debug(`ran command: '${command}'`);
+        debug(`error code: ${errorCode}`);
         process.exit(errorCode);
       })
       .catch(e => {
