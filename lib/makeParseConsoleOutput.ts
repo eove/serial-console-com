@@ -16,7 +16,7 @@ export function makeParseConsoleOutput(
   });
 
   return (data: string) => {
-    const regex = new RegExp(`(.*)${lineSeparator}(${prompt})`, 'sm');
+    const regex = new RegExp(`(.*)${lineSeparator}(.*${prompt}.*)`, 'sm');
     const found = data.match(regex);
     if (found && found.length) {
       return {

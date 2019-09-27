@@ -34,6 +34,34 @@ describe('parse console output', () => {
     });
   });
 
+  it('should return lines when output contains expected prompt with pre escape chars', () => {
+    expect(
+      parseConsoleOutput(
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \ndrwxr-xr-x 18 root root 0 Sep 11 15:48 .. \n\u001b[1;32m/ #'
+      )
+    ).toEqual({
+      lines: [
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 .',
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..'
+      ],
+      remaining: ''
+    });
+  });
+
+  it('should return lines when output contains expected prompt with post escape chars', () => {
+    expect(
+      parseConsoleOutput(
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \ndrwxr-xr-x 18 root root 0 Sep 11 15:48 .. \n/ #\u001b[1;32m'
+      )
+    ).toEqual({
+      lines: [
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 .',
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..'
+      ],
+      remaining: ''
+    });
+  });
+
   it('should return remaining data when no prompt in output', () => {
     expect(
       parseConsoleOutput(
