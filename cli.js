@@ -25,6 +25,11 @@ program
   )
   .option('--prompt [PROMPT]', 'PROMPT is the serial console prompt', '/ #')
   .option(
+    '-t, --timeout [TIMEOUT]',
+    'TIMEOUT in ms to be used for lon grun commands such as "du -h ."',
+    3000
+  )
+  .option(
     '-l, --line-separator [LINE_SEPARATOR]',
     'LINE_SEPARATOR is the serial console line separator',
     '\n'
@@ -41,7 +46,9 @@ program
     });
     communicator
       .connect(options.portName)
-      .then(() => communicator.executeCmd(command))
+      .then(() =>
+        communicator.executeCmd(command, { timeout: options.timeout })
+      )
       .then(result => {
         const { output, errorCode } = result;
         console.log(output.join(options.lineSeparator));
