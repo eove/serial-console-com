@@ -70,8 +70,8 @@ export function createSerialCommunicator(
     return transport.disconnect();
   }
 
-  async function executeCmd(cmd: string, options?: CommandOptions) {
-    const { timeout } = _.defaults({}, options, { timeout: 3000 });
+  async function executeCmd(cmd: string, cmdOptions?: CommandOptions) {
+    const { timeout } = _.defaults({}, cmdOptions, { timeout: 3000 });
 
     const cmdOutput = await runner.runCommand({
       cmdLine: `${cmd}${lineSeparator}`,
