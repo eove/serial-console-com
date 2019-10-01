@@ -96,7 +96,13 @@ export function createCommandRunner(
       return commandAnswer$()
         .pipe(
           timeout(answerTimeoutMS),
-          catchError(error => throwError(error))
+          catchError(({ message }) =>
+            throwError(
+              new Error(
+                `${message} (cmd: ${cmdLine.trim()}, timeout: ${answerTimeoutMS} ms)`
+              )
+            )
+          )
         )
         .toPromise();
 
