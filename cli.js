@@ -29,6 +29,7 @@ program
     'TIMEOUT in ms to be used for lon grun commands such as "du -h ."',
     3000
   )
+  .option('--dont-wait-answer', 'execute command and do not wait answer')
   .option(
     '-l, --line-separator [LINE_SEPARATOR]',
     'LINE_SEPARATOR is the serial console line separator',
@@ -47,7 +48,10 @@ program
     communicator
       .connect(options.portName)
       .then(() =>
-        communicator.executeCmd(command, { timeout: options.timeout })
+        communicator.executeCmd(command, {
+          timeout: options.timeout,
+          waitAnswer: !options.dontWaitAnswer
+        })
       )
       .then(result => {
         const { output, errorCode } = result;

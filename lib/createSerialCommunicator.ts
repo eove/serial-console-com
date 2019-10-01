@@ -25,6 +25,7 @@ export interface CommunicatorCreationOptions {
 
 export interface CommandOptions {
   timeout?: number;
+  waitAnswer?: boolean;
 }
 
 export function createSerialCommunicator(
@@ -71,20 +72,39 @@ export function createSerialCommunicator(
   }
 
   async function executeCmd(cmd: string, cmdOptions?: CommandOptions) {
-    const { timeout } = _.defaults({}, cmdOptions, { timeout: 3000 });
+    const { timeout, waitAnswer } = _.defaults({}, cmdOptions, {
+      timeout: 3000,
+      waitAnswer: true
+    });
 
-    const cmdOutput = await runner.runCommand({
-      cmdLine: `${cmd}${lineSeparator}`,
-      answerTimeoutMS: timeout
-    });
-    const errCodeCmdOutput = await runner.runCommand({
-      cmdLine: `echo ${SAFE_PATTERN}: $?${lineSeparator}`,
-      answerTimeoutMS: 2000
-    });
-    return {
-      output: cmdOutput,
-      errorCode: parseErrorCode(errCodeCmdOutput.join())
-    };
+    return waitAnswer ? await executeAndWaitAnswer() : await execute();
+
+    async function executeAndWaitAnswer() {
+      const cmdOutput = await runner.runCommand({
+        cmdLine: `${cmd}${lineSeparator}`,
+        answerTimeoutMS: timeout
+      });
+      const errCodeCmdOutput = await runner.runCommand({
+        cmdLine: `echo ${SAFE_PATTERN}: $?${lineSeparator}`,
+        answerTimeoutMS: 2000
+      });
+      return {
+        output: cmdOutput,
+        errorCode: parseErrorCode(errCodeCmdOutput.join())
+      };
+    }
+
+    async function execute() {
+      await runner.runCommand({
+        cmdLine: `${cmd}${lineSeparator}`,
+        answerTimeoutMS: timeout,
+        answerExpected: false
+      });
+      return {
+        output: [],
+        errorCode: 0
+      };
+    }
 
     function parseErrorCode(output: any) {
       const regex = new RegExp(`${SAFE_PATTERN}: (.*)`, 'sm');

@@ -22,6 +22,7 @@ import {
 interface Command {
   cmdLine: string;
   answerTimeoutMS?: number;
+  answerExpected?: boolean;
 }
 
 interface CommandRunner {
@@ -78,15 +79,17 @@ export function createCommandRunner(
   };
 
   function runCommand(cmd: Command) {
-    const { cmdLine, answerTimeoutMS = 3000 } = cmd;
+    const { cmdLine, answerTimeoutMS = 3000, answerExpected = true } = cmd;
     debug(`running command: ${cmdLine}`);
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
       const answer = waitAnswer();
-      return transport
-        .write(cmdLine)
-        .then(() => answer)
-        .then(cleanupLines);
+      return answerExpected
+        ? transport
+            .write(cmdLine)
+            .then(() => answer)
+            .then(cleanupLines)
+        : transport.write(cmdLine).then(() => []);
     });
 
     function waitAnswer() {
