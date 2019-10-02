@@ -80,7 +80,7 @@ export function createCommandRunner(
 
   function runCommand(cmd: Command) {
     const { cmdLine, answerTimeoutMS = 3000, answerExpected = true } = cmd;
-    debug(`running command: ${cmdLine}`);
+    debug('running command:', cmd);
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
       const answer = waitAnswer();
