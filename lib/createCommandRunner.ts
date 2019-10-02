@@ -83,13 +83,14 @@ export function createCommandRunner(
     debug('running command:', cmd);
     return commandQueue.enqueue(() => {
       commandSource.next(cmd);
-      const answer = waitAnswer();
-      return answerExpected
-        ? transport
-            .write(cmdLine)
-            .then(() => answer)
-            .then(cleanupLines)
-        : transport.write(cmdLine).then(() => []);
+      if (answerExpected) {
+        const answer = waitAnswer();
+        return transport
+          .write(cmdLine)
+          .then(() => answer)
+          .then(cleanupLines);
+      }
+      return transport.write(cmdLine).then(() => []);
     });
 
     function waitAnswer() {
