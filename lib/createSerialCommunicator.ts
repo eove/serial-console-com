@@ -84,13 +84,14 @@ export function createSerialCommunicator(
         cmdLine: `${cmd}${lineSeparator}`,
         answerTimeoutMS: timeout
       });
-      const errCodeCmdOutput = await runner.runCommand({
+      const errCodeCmdOutput = (await runner.runCommand({
         cmdLine: `echo ${SAFE_PATTERN}: $?${lineSeparator}`,
         answerTimeoutMS: 2000
-      });
+      })).join();
       return {
         output: cmdOutput,
-        errorCode: parseErrorCode(errCodeCmdOutput.join())
+        errorCode: parseErrorCode(errCodeCmdOutput),
+        detail: `error code command output: ${errCodeCmdOutput}`
       };
     }
 
