@@ -6,8 +6,8 @@ import { createTransport } from './createTransport';
 import { makeParseConsoleOutput } from './makeParseConsoleOutput';
 import {
   parseErrorCode,
-  SAFE_PATTERN_START,
-  SAFE_PATTERN_END
+  SAFE_PATTERN_END,
+  SAFE_PATTERN_START
 } from './parseErrorCode';
 
 export interface SerialCommunicator {
