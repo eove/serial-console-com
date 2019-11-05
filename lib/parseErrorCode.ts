@@ -1,5 +1,5 @@
-export const SAFE_PATTERN_START = '<RC_START>';
-export const SAFE_PATTERN_END = '<RC_END>';
+export const SAFE_PATTERN_START = 'RC_START_';
+export const SAFE_PATTERN_END = '_RC_END';
 
 export function parseErrorCode(output: any) {
   const regex = new RegExp(
