@@ -4,8 +4,11 @@ import { Observable } from 'rxjs';
 import { createCommandRunner } from './createCommandRunner';
 import { createTransport } from './createTransport';
 import { makeParseConsoleOutput } from './makeParseConsoleOutput';
-
-const SAFE_PATTERN = 'THIS IS MY RETURN CODE';
+import {
+  parseErrorCode,
+  SAFE_PATTERN_START,
+  SAFE_PATTERN_END
+} from './parseErrorCode';
 
 export interface SerialCommunicator {
   connect: (portName: string) => Promise<void>;
@@ -85,7 +88,7 @@ export function createSerialCommunicator(
         answerTimeoutMS: timeout
       });
       const errCodeCmdOutput = (await runner.runCommand({
-        cmdLine: `echo ${SAFE_PATTERN}: $?${lineSeparator}`,
+        cmdLine: `echo ${SAFE_PATTERN_START}$?${SAFE_PATTERN_END}${lineSeparator}`,
         answerTimeoutMS: 2000
       })).join();
       return {
@@ -105,15 +108,6 @@ export function createSerialCommunicator(
         output: [],
         errorCode: 0
       };
-    }
-
-    function parseErrorCode(output: any) {
-      const regex = new RegExp(`${SAFE_PATTERN}: (.*)`, 'sm');
-      const found = output.match(regex);
-      if (found && found.length) {
-        return Number(found[1]);
-      }
-      return -127;
     }
   }
 }
