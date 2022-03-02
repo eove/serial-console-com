@@ -7,13 +7,14 @@ import { makeParseConsoleOutput } from './makeParseConsoleOutput';
 import {
   parseErrorCode,
   SAFE_PATTERN_END,
-  SAFE_PATTERN_START
+  SAFE_PATTERN_START,
 } from './parseErrorCode';
 
 export interface SerialCommunicator {
   connect: (portName: string) => Promise<void>;
   disconnect: () => Promise<void>;
   executeCmd: (cmd: string) => Promise<any>;
+  setPin: (pinName: string, state: boolean) => Promise<void>;
   connected: boolean;
   answer$: Observable<any>;
   data$: Observable<any>;
@@ -41,7 +42,7 @@ export function createSerialCommunicator(
       baudrate: 115200,
       prompt: '/ #',
       lineSeparator: '\n',
-      debugEnabled: false
+      debugEnabled: false,
     }
   );
   const transport = createTransport({ baudrate, debugEnabled });
@@ -49,12 +50,13 @@ export function createSerialCommunicator(
     data$: transport.data$,
     transport,
     parseData: makeParseConsoleOutput({ prompt, lineSeparator }),
-    debugEnabled
+    debugEnabled,
   });
   return {
     connect,
     disconnect,
     executeCmd,
+    setPin,
     get connected() {
       return transport.connected;
     },
@@ -63,7 +65,7 @@ export function createSerialCommunicator(
     },
     get data$() {
       return transport.data$;
-    }
+    },
   };
 
   function connect(portName: string): Promise<void> {
@@ -74,10 +76,14 @@ export function createSerialCommunicator(
     return transport.disconnect();
   }
 
+  function setPin(pinName: string, state: boolean): Promise<void> {
+    return transport.ioctl({ [pinName]: state });
+  }
+
   async function executeCmd(cmd: string, cmdOptions?: CommandOptions) {
     const { timeout, waitAnswer } = _.defaults({}, cmdOptions, {
       timeout: 3000,
-      waitAnswer: true
+      waitAnswer: true,
     });
 
     return waitAnswer ? await executeAndWaitAnswer() : await execute();
@@ -85,16 +91,18 @@ export function createSerialCommunicator(
     async function executeAndWaitAnswer() {
       const cmdOutput = await runner.runCommand({
         cmdLine: `${cmd}${lineSeparator}`,
-        answerTimeoutMS: timeout
+        answerTimeoutMS: timeout,
       });
-      const errCodeCmdOutput = (await runner.runCommand({
-        cmdLine: `echo ${SAFE_PATTERN_START}$?${SAFE_PATTERN_END}${lineSeparator}`,
-        answerTimeoutMS: 2000
-      })).join();
+      const errCodeCmdOutput = (
+        await runner.runCommand({
+          cmdLine: `echo ${SAFE_PATTERN_START}$?${SAFE_PATTERN_END}${lineSeparator}`,
+          answerTimeoutMS: 2000,
+        })
+      ).join();
       return {
         output: cmdOutput,
         errorCode: parseErrorCode(errCodeCmdOutput),
-        detail: `error code command output: ${errCodeCmdOutput}`
+        detail: `error code command output: ${errCodeCmdOutput}`,
       };
     }
 
@@ -102,11 +110,11 @@ export function createSerialCommunicator(
       await runner.runCommand({
         cmdLine: `${cmd}${lineSeparator}`,
         answerTimeoutMS: timeout,
-        answerExpected: false
+        answerExpected: false,
       });
       return {
         output: [],
-        errorCode: 0
+        errorCode: 0,
       };
     }
   }

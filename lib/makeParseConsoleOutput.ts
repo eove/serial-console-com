@@ -12,7 +12,7 @@ export function makeParseConsoleOutput(
 ): ParseConsoleOutputFunction {
   const { prompt, lineSeparator } = _.defaults({}, options, {
     prompt: '/ #',
-    lineSeparator: '\n'
+    lineSeparator: '\n',
   });
 
   return (data: string) => {
@@ -22,14 +22,14 @@ export function makeParseConsoleOutput(
       return {
         lines: found[1]
           .split(/\r\n|\r|\n/)
-          .map(l => l.trim())
-          .filter(x => x),
-        remaining: ''
+          .map((l) => l.trim())
+          .filter((x) => x),
+        remaining: '',
       };
     }
     return {
       lines: [],
-      remaining: data
+      remaining: data,
     };
   };
 }

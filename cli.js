@@ -37,30 +37,30 @@ program
   )
   .action((command, options) => {
     const debug = Object.assign(debugLib('cli'), {
-      enabled: options.debugEnabled
+      enabled: options.debugEnabled,
     });
     const communicator = createSerialCommunicator({
       debugEnabled: options.debugEnabled,
       baudrate: options.baudrate,
       prompt: options.prompt,
-      lineSeparator: options.lineSeparator
+      lineSeparator: options.lineSeparator,
     });
     communicator
       .connect(options.portName)
       .then(() =>
         communicator.executeCmd(command, {
           timeout: options.timeout,
-          waitAnswer: !options.dontWaitAnswer
+          waitAnswer: !options.dontWaitAnswer,
         })
       )
-      .then(result => {
+      .then((result) => {
         const { output, errorCode } = result;
         console.log(output.join(options.lineSeparator));
         debug(`ran command: '${command}'`);
         debug(`error code: ${errorCode}`);
         process.exit(errorCode);
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
         process.exit(1);
       });
