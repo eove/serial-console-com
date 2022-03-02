@@ -10,13 +10,13 @@ import {
   publish,
   refCount,
   scan,
-  timeout
+  timeout,
 } from 'rxjs/operators';
 
 import {
   ParseConsoleOutputFunction,
   ParseConsoleOutputResult,
-  Transport
+  Transport,
 } from './types';
 
 interface Command {
@@ -47,7 +47,7 @@ export function createCommandRunner(
     { debugEnabled: false }
   );
   const debug = Object.assign(debugLib('command-runner'), {
-    enabled: debugEnabled
+    enabled: debugEnabled,
   });
 
   const commandQueue = createQueue({ concurrency: 1 });
@@ -63,7 +63,7 @@ export function createCommandRunner(
       },
       {
         remaining: '',
-        lines: []
+        lines: [],
       }
     ),
     filter((result: ParseConsoleOutputResult) => result.lines.length !== 0),
@@ -75,7 +75,7 @@ export function createCommandRunner(
     answer$,
     get command$() {
       return commandSource.asObservable();
-    }
+    },
   };
 
   function runCommand(cmd: Command) {
@@ -108,16 +108,12 @@ export function createCommandRunner(
         .toPromise();
 
       function commandAnswer$() {
-        return answer$.pipe(
-          publish(),
-          refCount(),
-          first()
-        );
+        return answer$.pipe(publish(), refCount(), first());
       }
     }
 
     function cleanupLines(lines: string[]) {
-      return lines.filter(l => !l.includes(cmdLine.trim()));
+      return lines.filter((l) => !l.includes(cmdLine.trim()));
     }
   }
 }

@@ -7,7 +7,7 @@ describe('parse console output', () => {
   beforeEach(() => {
     parseConsoleOutput = makeParseConsoleOutput({
       prompt: '/ #',
-      lineSeparator: '\n'
+      lineSeparator: '\n',
     });
   });
 
@@ -16,7 +16,7 @@ describe('parse console output', () => {
       parseConsoleOutput('drwxr-xr-x 18 root root 0 Sep 11 15:48 . \n/ #')
     ).toEqual({
       lines: ['drwxr-xr-x 18 root root 0 Sep 11 15:48 .'],
-      remaining: ''
+      remaining: '',
     });
   });
 
@@ -28,9 +28,9 @@ describe('parse console output', () => {
     ).toEqual({
       lines: [
         'drwxr-xr-x 18 root root 0 Sep 11 15:48 .',
-        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..'
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..',
       ],
-      remaining: ''
+      remaining: '',
     });
   });
 
@@ -42,9 +42,9 @@ describe('parse console output', () => {
     ).toEqual({
       lines: [
         'drwxr-xr-x 18 root root 0 Sep 11 15:48 .',
-        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..'
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..',
       ],
-      remaining: ''
+      remaining: '',
     });
   });
 
@@ -56,9 +56,9 @@ describe('parse console output', () => {
     ).toEqual({
       lines: [
         'drwxr-xr-x 18 root root 0 Sep 11 15:48 .',
-        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..'
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 ..',
       ],
-      remaining: ''
+      remaining: '',
     });
   });
 
@@ -70,7 +70,7 @@ describe('parse console output', () => {
     ).toEqual({
       lines: [],
       remaining:
-        'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \ndrwxr-xr-x 18 root root 0 Sep 11 15:48 .. \n'
+        'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \ndrwxr-xr-x 18 root root 0 Sep 11 15:48 .. \n',
     });
   });
 
@@ -79,7 +79,7 @@ describe('parse console output', () => {
       parseConsoleOutput('drwxr-xr-x 18 root root 0 Sep 11 15:48 . / #')
     ).toEqual({
       lines: [],
-      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . / #'
+      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . / #',
     });
   });
 
@@ -88,7 +88,7 @@ describe('parse console output', () => {
       parseConsoleOutput('drwxr-xr-x 18 root root 0 Sep 11 15:48 . \n/ $')
     ).toEqual({
       lines: [],
-      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \n/ $'
+      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \n/ $',
     });
   });
 
@@ -97,7 +97,7 @@ describe('parse console output', () => {
       parseConsoleOutput('drwxr-xr-x 18 root root 0 Sep 11 15:48 . \r/ #')
     ).toEqual({
       lines: [],
-      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \r/ #'
+      remaining: 'drwxr-xr-x 18 root root 0 Sep 11 15:48 . \r/ #',
     });
   });
 });
