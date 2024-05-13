@@ -13,7 +13,7 @@ import {
 export interface SerialCommunicator {
   connect: (portName: string) => Promise<void>;
   disconnect: () => Promise<void>;
-  executeCmd: (cmd: string) => Promise<any>;
+  executeCmd: (cmd: string, cmdOptions?: CommandOptions) => Promise<any>;
   setPin: (pinName: string, state: boolean) => Promise<void>;
   connected: boolean;
   answer$: Observable<any>;
