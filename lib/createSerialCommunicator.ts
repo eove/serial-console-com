@@ -13,7 +13,10 @@ import {
 export interface SerialCommunicator {
   connect: (portName: string) => Promise<void>;
   disconnect: () => Promise<void>;
-  executeCmd: (cmd: string, cmdOptions?: CommandOptions) => Promise<any>;
+  executeCmd: (
+    cmd: string,
+    cmdOptions?: CommandOptions
+  ) => Promise<CommandResult>;
   setPin: (pinName: string, state: boolean) => Promise<void>;
   connected: boolean;
   answer$: Observable<any>;
@@ -30,6 +33,13 @@ export interface CommunicatorCreationOptions {
 export interface CommandOptions {
   timeout?: number;
   waitAnswer?: boolean;
+  validateWithErrorCode?: boolean;
+}
+
+export interface CommandResult {
+  output: string[];
+  errorCode: number;
+  detail?: string;
 }
 
 export function createSerialCommunicator(
@@ -80,15 +90,28 @@ export function createSerialCommunicator(
     return transport.ioctl({ [pinName]: state });
   }
 
-  async function executeCmd(cmd: string, cmdOptions?: CommandOptions) {
-    const { timeout, waitAnswer } = _.defaults({}, cmdOptions, {
-      timeout: 3000,
-      waitAnswer: true,
-    });
+  async function executeCmd(
+    cmd: string,
+    cmdOptions?: CommandOptions
+  ): Promise<CommandResult> {
+    const { timeout, waitAnswer, validateWithErrorCode } = _.defaults(
+      {},
+      cmdOptions,
+      {
+        timeout: 3000,
+        waitAnswer: true,
+        validateErrorCode: true,
+      }
+    );
+    if (!waitAnswer) {
+      return await execute();
+    }
 
-    return waitAnswer ? await executeAndWaitAnswer() : await execute();
+    return validateWithErrorCode
+      ? await executeAndWaitAnswerWithErrorCode()
+      : await executeAndWaitAnswerWithoutErrorCode();
 
-    async function executeAndWaitAnswer() {
+    async function executeAndWaitAnswerWithErrorCode() {
       const cmdOutput = await runner.runCommand({
         cmdLine: `${cmd}${lineSeparator}`,
         answerTimeoutMS: timeout,
@@ -106,6 +129,16 @@ export function createSerialCommunicator(
       };
     }
 
+    async function executeAndWaitAnswerWithoutErrorCode() {
+      const cmdOutput = await runner.runCommand({
+        cmdLine: `${cmd}${lineSeparator}`,
+        answerTimeoutMS: timeout,
+      });
+      return {
+        output: cmdOutput,
+        errorCode: 0,
+      };
+    }
     async function execute() {
       await runner.runCommand({
         cmdLine: `${cmd}${lineSeparator}`,
