@@ -34,6 +34,7 @@ export interface CommandOptions {
   timeout?: number;
   waitAnswer?: boolean;
   validateWithErrorCode?: boolean;
+  validateErrorCodeWithSafePattern?: boolean;
 }
 
 export interface CommandResult {
