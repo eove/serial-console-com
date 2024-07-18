@@ -94,15 +94,17 @@ export function createSerialCommunicator(
     cmd: string,
     cmdOptions?: CommandOptions
   ): Promise<CommandResult> {
-    const { timeout, waitAnswer, validateWithErrorCode } = _.defaults(
-      {},
-      cmdOptions,
-      {
-        timeout: 3000,
-        waitAnswer: true,
-        validateErrorCode: true,
-      }
-    );
+    const {
+      timeout,
+      waitAnswer,
+      validateWithErrorCode,
+      validateErrorCodeWithSafePattern,
+    } = _.defaults({}, cmdOptions, {
+      timeout: 3000,
+      waitAnswer: true,
+      validateWithErrorCode: true,
+      validateErrorCodeWithSafePattern: true,
+    });
     if (!waitAnswer) {
       return await execute();
     }
@@ -116,15 +118,20 @@ export function createSerialCommunicator(
         cmdLine: `${cmd}${lineSeparator}`,
         answerTimeoutMS: timeout,
       });
+      const errorCodeCommand = validateErrorCodeWithSafePattern
+        ? `echo ${SAFE_PATTERN_START}$?${SAFE_PATTERN_END}${lineSeparator}`
+        : `echo $?${lineSeparator}`;
       const errCodeCmdOutput = (
         await runner.runCommand({
-          cmdLine: `echo ${SAFE_PATTERN_START}$?${SAFE_PATTERN_END}${lineSeparator}`,
+          cmdLine: errorCodeCommand,
           answerTimeoutMS: 2000,
         })
       ).join();
       return {
         output: cmdOutput,
-        errorCode: parseErrorCode(errCodeCmdOutput),
+        errorCode: validateErrorCodeWithSafePattern
+          ? parseErrorCode(errCodeCmdOutput)
+          : Number(errCodeCmdOutput),
         detail: `error code command output: ${errCodeCmdOutput}`,
       };
     }
