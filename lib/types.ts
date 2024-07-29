@@ -26,7 +26,7 @@ export interface Transport {
   write: (bytes: string) => Promise<any>;
   discover: () => Promise<Device[]>;
   ioctl: (options: IOCTLOptions) => Promise<void>;
-  data$: Observable<unknown>;
+  data$: Observable<string>;
   event$: Observable<unknown>;
   connected: boolean;
 }

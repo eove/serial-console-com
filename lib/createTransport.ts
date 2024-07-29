@@ -15,7 +15,7 @@ interface TransportCreationOptions {
 export function createTransport(options?: TransportCreationOptions): Transport {
   const { debugEnabled = false } = options || {};
   const debug = Object.assign(debugLib('transport'), { enabled: debugEnabled });
-  const dataSource = new Subject();
+  const dataSource = new Subject<string>();
   const eventSource = new Subject();
   let port: SerialPort;
   let uninstallPortListeners: UninstallHandler;

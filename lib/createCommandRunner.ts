@@ -19,13 +19,13 @@ import {
   Transport,
 } from './types';
 
-interface Command {
+export interface Command {
   cmdLine: string;
   answerTimeoutMS?: number;
   answerExpected?: boolean;
 }
 
-interface CommandRunner {
+export interface CommandRunner {
   runCommand: (cmd: Command) => Promise<string[]>;
   answer$: Observable<any>;
   command$: Observable<unknown>;
@@ -34,7 +34,7 @@ interface CommandRunner {
 interface CommandRunnerDependencies {
   parseData: ParseConsoleOutputFunction;
   transport: Transport;
-  data$: Observable<any>;
+  data$: Observable<string>;
   debugEnabled?: boolean;
 }
 
@@ -66,7 +66,7 @@ export function createCommandRunner(
         lines: [],
       }
     ),
-    filter((result: ParseConsoleOutputResult) => result.lines.length !== 0),
+    filter((result: ParseConsoleOutputResult) => _.isEmpty(result.remaining)),
     map((result: ParseConsoleOutputResult) => result.lines)
   );
 
