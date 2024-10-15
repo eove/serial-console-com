@@ -45,7 +45,7 @@
     "debug": "4.1.1",
     "lodash": "4.17.21",
     "rxjs": "6.5.4",
-    "serialport": "9.2.8"
+    "serialport": "11.0.1"
   },
   "devDependencies": {
     "@types/debug": "4.1.5",

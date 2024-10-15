@@ -1,7 +1,7 @@
 import * as debugLib from 'debug';
 import * as _ from 'lodash';
 import { Subject } from 'rxjs';
-import * as SerialPort from 'serialport';
+import {SerialPort} from 'serialport';
 
 import { Device, Transport, IOCTLOptions } from './types';
 
@@ -43,7 +43,7 @@ export function createTransport(options?: TransportCreationOptions): Transport {
       return Promise.reject(new Error('already connected'));
     }
     const { baudRate } = _.defaults({}, options, { baudRate: 115200 });
-    port = new SerialPort(portName, { autoOpen: false, baudRate });
+    port = new SerialPort({path: portName, autoOpen: false, baudRate });
     uninstallPortListeners = installPortListeners();
     debug(`connecting to: ${portName}, baud rate: ${baudRate}`);
 
