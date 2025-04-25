@@ -9,7 +9,7 @@ type UninstallHandler = () => void;
 
 interface TransportCreationOptions {
   debugEnabled?: boolean;
-  baudrate?: number;
+  baudRate?: number;
 }
 
 export function createTransport(options?: TransportCreationOptions): Transport {

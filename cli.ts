@@ -106,10 +106,11 @@ program
     debug.enabled = debugEnabled;
     const serial = createTransport({
       debugEnabled,
-      baudrate: Number(baudrate),
+      baudRate: Number(baudrate),
     });
     const received: string[] = [];
     serial.data$.subscribe((d: string) => received.push(d));
+    debug(`connecting to ${portName} at ${baudrate}`);
     await serial.connect(portName);
 
     if (interBytesDelayMs) {

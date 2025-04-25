@@ -56,7 +56,7 @@ export function createSerialCommunicator(
       debugEnabled: false,
     }
   );
-  const transport = createTransport({ baudrate, debugEnabled });
+  const transport = createTransport({ baudRate: baudrate, debugEnabled });
   const runner = createCommandRunner({
     data$: transport.data$,
     transport,
