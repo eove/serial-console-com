@@ -1,4 +1,4 @@
-build
-package.json
-package-lock.json
+*.json
 *.yml
+build/*
+.direnv
