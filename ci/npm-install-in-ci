@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Backuping current npm conf (see below)
+mv .npmrc .npmrc.bak
+
+# Authenticating on npm private registry
+echo "//npm.pkg.github.com/:_authToken=$1" > .npmrc
+echo "@eove:registry=https://npm.pkg.github.com" >> .npmrc
+
+# Ignoring scripts which could steal credentials
+npm ci --ignore-scripts
+
+# Restoring old npm conf
+rm .npmrc
+mv .npmrc.bak .npmrc
+
+# Resuming install
+npm rebuild
+npm run prepare --if-present

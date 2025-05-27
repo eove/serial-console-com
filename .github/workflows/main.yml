@@ -1,0 +1,19 @@
+name: CI
+
+on: [push]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v30
+
+      - name: install
+        run: |
+          nix develop . --command ./ci/npm-install-in-ci "${{ secrets.CI_TOKEN }}"
+      
+      - name: tests
+        run: |
+          nix develop . --command npm run test
