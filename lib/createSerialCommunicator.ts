@@ -27,6 +27,7 @@ export interface CommunicatorCreationOptions {
   baudrate?: number;
   prompt?: string;
   lineSeparator?: string;
+  enterChar?: string;
   debugEnabled?: boolean;
 }
 
@@ -46,16 +47,14 @@ export interface CommandResult {
 export function createSerialCommunicator(
   options?: CommunicatorCreationOptions
 ): SerialCommunicator {
-  const { baudrate, prompt, lineSeparator, debugEnabled } = _.defaults(
-    {},
-    options,
-    {
+  const { baudrate, prompt, lineSeparator, debugEnabled, enterChar } =
+    _.defaults({}, options, {
       baudrate: 115200,
       prompt: '/ #',
       lineSeparator: '\n',
+      enterChar: '\r',
       debugEnabled: false,
-    }
-  );
+    });
   const transport = createTransport({ baudRate: baudrate, debugEnabled });
   const runner = createCommandRunner({
     data$: transport.data$,
@@ -116,12 +115,12 @@ export function createSerialCommunicator(
 
     async function executeAndWaitAnswerWithErrorCode() {
       const cmdOutput = await runner.runCommand({
-        cmdLine: `${cmd}${lineSeparator}`,
+        cmdLine: `${cmd}${enterChar}`,
         answerTimeoutMS: timeout,
       });
       const errorCodeCommand = validateErrorCodeWithSafePattern
-        ? `echo ${SAFE_PATTERN_START}$?${SAFE_PATTERN_END}${lineSeparator}`
-        : `echo $?${lineSeparator}`;
+        ? `echo ${SAFE_PATTERN_START}$?${SAFE_PATTERN_END}${enterChar}`
+        : `echo $?${enterChar}`;
       const errCodeCmdOutput = (
         await runner.runCommand({
           cmdLine: errorCodeCommand,
@@ -149,7 +148,7 @@ export function createSerialCommunicator(
     }
     async function execute() {
       await runner.runCommand({
-        cmdLine: `${cmd}${lineSeparator}`,
+        cmdLine: `${cmd}${enterChar}`,
         answerTimeoutMS: timeout,
         answerExpected: false,
       });
