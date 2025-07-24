@@ -87,8 +87,7 @@ export function createCommandRunner(
         await transport.write(cmdLine);
       };
       if (answerExpected) {
-        const answerPromise = waitAnswer();
-        const [lines] = await Promise.all([answerPromise, writePromise]);
+        const [lines] = await Promise.all([waitAnswer(), writePromise()]);
         return cleanupLines(lines);
       }
       return await writePromise();
