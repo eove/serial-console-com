@@ -78,19 +78,20 @@ export function createCommandRunner(
     },
   };
 
-  function runCommand(cmd: Command) {
+  async function runCommand(cmd: Command) {
     const { cmdLine, answerTimeoutMS = 3000, answerExpected = true } = cmd;
     debug('running command:', cmd);
-    return commandQueue.enqueue(() => {
+    return commandQueue.enqueue(async () => {
       commandSource.next(cmd);
+      const writePromise = async () => {
+        await transport.write(cmdLine);
+      };
       if (answerExpected) {
-        const answer = waitAnswer();
-        return transport
-          .write(cmdLine)
-          .then(() => answer)
-          .then(cleanupLines);
+        const answerPromise = waitAnswer();
+        const [lines] = await Promise.all([answerPromise, writePromise]);
+        return cleanupLines(lines);
       }
-      return transport.write(cmdLine).then(() => []);
+      return await writePromise();
     });
 
     function waitAnswer() {
