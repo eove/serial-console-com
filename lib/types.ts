@@ -2,11 +2,11 @@ import { Observable } from 'rxjs';
 
 export interface ParseConsoleOutputResult {
   lines: string[];
-  remaining: string;
+  remaining: Buffer;
 }
 
 export type ParseConsoleOutputFunction = (
-  data: string
+  data: Buffer
 ) => ParseConsoleOutputResult;
 
 export interface Device {
@@ -26,7 +26,7 @@ export interface Transport {
   write: (bytes: string) => Promise<any>;
   discover: () => Promise<Device[]>;
   ioctl: (options: IOCTLOptions) => Promise<void>;
-  data$: Observable<string>;
+  data$: Observable<Buffer>;
   event$: Observable<unknown>;
   connected: boolean;
 }

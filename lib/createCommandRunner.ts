@@ -34,7 +34,7 @@ export interface CommandRunner {
 interface CommandRunnerDependencies {
   parseData: ParseConsoleOutputFunction;
   transport: Transport;
-  data$: Observable<string>;
+  data$: Observable<Buffer>;
   debugEnabled?: boolean;
 }
 
@@ -55,14 +55,14 @@ export function createCommandRunner(
 
   const answer$ = data$.pipe(
     scan(
-      (acc: ParseConsoleOutputResult, byte: any) => {
+      (acc: ParseConsoleOutputResult, current: any) => {
         const { remaining: remainingBytes } = acc;
-        const received = remainingBytes.concat(...byte);
+        const received = Buffer.concat([remainingBytes, current]);
         const { remaining, lines } = parseData(received);
         return { remaining, lines };
       },
       {
-        remaining: '',
+        remaining: Buffer.alloc(0),
         lines: [],
       }
     ),

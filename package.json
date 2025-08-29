@@ -1,6 +1,6 @@
 {
   "name": "@eove/serial-console-com",
-  "version": "2.1.1",
+  "version": "2.1.2-i20.1",
   "description": "library to communicate with a (unix) console over a serial line",
   "bin": "./cli.js",
   "main": "build/index.js",

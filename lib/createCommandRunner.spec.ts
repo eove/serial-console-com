@@ -1,11 +1,11 @@
-import { createCommandRunner, CommandRunner } from './createCommandRunner';
+import { CommandRunner, createCommandRunner } from './createCommandRunner';
 import { makeParseConsoleOutput } from './makeParseConsoleOutput';
 import { createTransportMock } from './test';
 import { from, Subject } from 'rxjs';
 
 describe('command runner', () => {
   let runner: CommandRunner;
-  let subject: Subject<string>;
+  let subject: Subject<Buffer>;
 
   beforeEach(() => {
     subject = new Subject();
@@ -63,8 +63,8 @@ describe('command runner', () => {
   });
 
   function emitReceivedData(data: string) {
-    for (const c of data.split('')) {
-      subject.next(c);
+    for (let i = 0; i < Buffer.from(data).length; i++) {
+      subject.next(Buffer.from(data[i]));
     }
   }
 });
