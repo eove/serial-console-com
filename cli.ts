@@ -108,8 +108,8 @@ program
       debugEnabled,
       baudRate: Number(baudrate),
     });
-    const received: string[] = [];
-    serial.data$.subscribe((d: string) => received.push(d));
+    const received: Buffer[] = [];
+    serial.data$.subscribe((d) => received.push(d));
     debug(`connecting to ${portName} at ${baudrate}`);
     await serial.connect(portName);
 
@@ -127,7 +127,7 @@ program
       await serial.write('\n');
     }
     await delayMS(1000);
-    console.log('received:', received.join());
+    console.log('received:', Buffer.concat(received).toString());
     process.exit(0);
   });
 

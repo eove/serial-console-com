@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { Subject } from 'rxjs';
 import { SerialPort } from 'serialport';
 
-import { Device, Transport, IOCTLOptions } from './types';
+import { Device, IOCTLOptions, Transport } from './types';
 
 type UninstallHandler = () => void;
 
@@ -15,7 +15,7 @@ interface TransportCreationOptions {
 export function createTransport(options?: TransportCreationOptions): Transport {
   const { debugEnabled = false } = options || {};
   const debug = Object.assign(debugLib('transport'), { enabled: debugEnabled });
-  const dataSource = new Subject<string>();
+  const dataSource = new Subject<Buffer>();
   const eventSource = new Subject();
   let port: SerialPort;
   let uninstallPortListeners: UninstallHandler;
@@ -66,10 +66,10 @@ export function createTransport(options?: TransportCreationOptions): Transport {
         _sendEvent({ type: 'TRANSPORT_CONNECTED', payload: undefined });
       };
 
-      const onDataHandler = (data: any) => {
+      const onDataHandler = (data: Buffer) => {
         const received = data.toString();
         debug('received:', received.replace('\r', '\\r'));
-        _sendData(received);
+        _sendData(data);
       };
 
       const onCloseHandler = () => {
@@ -173,7 +173,7 @@ export function createTransport(options?: TransportCreationOptions): Transport {
     eventSource.next(event);
   }
 
-  function _sendData(data: any) {
+  function _sendData(data: Buffer) {
     dataSource.next(data);
   }
 }

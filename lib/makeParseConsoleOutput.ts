@@ -15,16 +15,16 @@ export function makeParseConsoleOutput(
     lineSeparator: '\n',
   });
 
-  return (data: string) => {
+  return (data: Buffer) => {
     const regex = new RegExp(`(.*)${lineSeparator}(.*${prompt}.*)`, 'sm');
-    const found = data.match(regex);
+    const found = data.toString().match(regex);
     if (found && found.length) {
       return {
         lines: found[1]
           .split(/\r\n|\r|\n/)
           .map((l) => l.trim())
           .filter((x) => x),
-        remaining: '',
+        remaining: Buffer.alloc(0),
       };
     }
     return {
